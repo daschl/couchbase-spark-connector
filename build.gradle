@@ -1,7 +1,15 @@
+buildscript {
+	repositories {
+		jcenter()
+		mavenCentral()
+	}
+}
+
 plugins {
 	id 'scala'
 	id 'java'
 	id 'maven-publish'
+	id 'com.adtran.scala-multiversion-plugin' version '1.0.34'
 }
 
 repositories {
@@ -10,27 +18,26 @@ repositories {
 }
 
 ext {
-	scalaVersion = "2.11"
 	sparkVersion = "2.3.0"
 }
 
 dependencies {
 	compile files("$sourceSets.main.scala.outputDir")
-	compile "org.scala-lang:scala-library:$scalaVersion"
+	compile "org.scala-lang:scala-library:%scala-version%"
 	compile "com.couchbase.client:java-client:2.7.2"
 	compile "com.couchbase.client:dcp-client:0.21.0"
-	compile "io.reactivex:rxscala_$scalaVersion:0.26.5"
+	compile "io.reactivex:rxscala_%%:0.26.5"
 	compile "org.apache.logging.log4j:log4j-api:2.2"
 
-	compileOnly "org.apache.spark:spark-core_$scalaVersion:$sparkVersion"
-	compileOnly "org.apache.spark:spark-streaming_$scalaVersion:$sparkVersion"
-	compileOnly "org.apache.spark:spark-sql_$scalaVersion:$sparkVersion"
+	compileOnly "org.apache.spark:spark-core_%%:$sparkVersion"
+	compileOnly "org.apache.spark:spark-streaming_%%:$sparkVersion"
+	compileOnly "org.apache.spark:spark-sql_%%:$sparkVersion"
 
 	testCompile "junit:junit:4.12"
-	testCompile "org.scalatest:scalatest_$scalaVersion:2.2.5"
-	testCompile "org.apache.spark:spark-core_$scalaVersion:$sparkVersion"
-	testCompile "org.apache.spark:spark-streaming_$scalaVersion:$sparkVersion"
-	testCompile "org.apache.spark:spark-sql_$scalaVersion:$sparkVersion"
+	testCompile "org.scalatest:scalatest_%%:2.2.5"
+	testCompile "org.apache.spark:spark-core_%%:$sparkVersion"
+	testCompile "org.apache.spark:spark-streaming_%%:$sparkVersion"
+	testCompile "org.apache.spark:spark-sql_%%:$sparkVersion"
 }
 
 publishing {
