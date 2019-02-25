@@ -1,0 +1,59 @@
+plugins {
+	id 'scala'
+	id 'java'
+	id 'maven-publish'
+}
+
+repositories {
+	mavenCentral()
+	jcenter()
+}
+
+ext {
+	scalaVersion = "2.11"
+	sparkVersion = "2.3.0"
+}
+
+dependencies {
+	compile files("$sourceSets.main.scala.outputDir")
+	compile "org.scala-lang:scala-library:$scalaVersion"
+	compile "com.couchbase.client:java-client:2.7.2"
+	compile "com.couchbase.client:dcp-client:0.21.0"
+	compile "io.reactivex:rxscala_$scalaVersion:0.26.5"
+	compile "org.apache.logging.log4j:log4j-api:2.2"
+
+	compileOnly "org.apache.spark:spark-core_$scalaVersion:$sparkVersion"
+	compileOnly "org.apache.spark:spark-streaming_$scalaVersion:$sparkVersion"
+	compileOnly "org.apache.spark:spark-sql_$scalaVersion:$sparkVersion"
+
+	testCompile "junit:junit:4.12"
+	testCompile "org.scalatest:scalatest_$scalaVersion:2.2.5"
+	testCompile "org.apache.spark:spark-core_$scalaVersion:$sparkVersion"
+	testCompile "org.apache.spark:spark-streaming_$scalaVersion:$sparkVersion"
+	testCompile "org.apache.spark:spark-sql_$scalaVersion:$sparkVersion"
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifactId = 'spark-connector'
+			pom {
+				description = 'Official Couchbase Spark Connector'
+			}
+		}
+	}
+}
+
+tasks.compileJava.dependsOn compileScala
+tasks.compileScala.dependsOn.remove("compileJava")
+
+sourceSets {
+	main {
+		scala {
+			outputDir = file("$buildDir/classes/scala/main")
+		}
+		java {
+			outputDir = file("$buildDir/classes/java/main")
+		}
+	}
+}
